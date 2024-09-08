@@ -1,6 +1,7 @@
 using HelloApi.Consumers;
 using HelloApi.Cotracts;
 using MassTransit;
+using MassTransit.Transports.Fabric;
 using System.Reflection;
 namespace HelloApi
 {
@@ -26,7 +27,7 @@ namespace HelloApi
                 //x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("hellos", true));
                 //x.AddConsumers(typeof(MessageConsumer));
 
-                //x.AddConsumer<MessageConsumer>();
+                x.AddConsumer<MessageConsumer>();
                 //x.AddConsumer<MessageConsumer, MessageConsumerDefinition>();
                 //x.AddConsumer<MessageConsumer>()
                 //.Endpoint(e => e.Name = "salutation");
@@ -45,10 +46,34 @@ namespace HelloApi
                     //    e.ConfigureConsumeTopology = false;
                     //});
                     //cfg.Message<Message>(x => x.SetEntityName("my-message"));
-                    //cfg.ConfigureEndpoints(context);
+
+
+                    cfg.ReceiveEndpoint("my-direct-queue", e =>
+                    {
+                        e.ConfigureConsumeTopology = false;
+                        e.Bind("my-direct-exchange", b =>
+                        {
+                            b.ExchangeType = "direct";
+                            b.RoutingKey = "my-direct-router-key";
+                        });
+                        //e.Bind<Message>();
+                        e.ConfigureConsumer<MessageConsumer>(context);
+                    });
+                    cfg.Publish<Message>(x =>
+                    {
+                        x.ExchangeType = "direct";
+                        x.Durable = true;
+                        x.AutoDelete = true;
+                        x.Exclude = true;
+                    });
+                    cfg.ConfigureEndpoints(context);
+
+
+
                 });
 
                 //x.UsingInMemory(); // for testing
+
             });
 
             var app = builder.Build();

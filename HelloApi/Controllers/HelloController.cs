@@ -25,20 +25,21 @@ namespace HelloApi.Controllers
             //await _publishEndpoint.Publish(messageToSend);
             await _publishEndpoint.Publish<Message>(messageToSend, publishContext =>
             {
+                publishContext.SetRoutingKey("my-direct-router-key");
                 publishContext.Headers.Set("message-id", "12345");
             });
 
-            var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:hello"));
+            //var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:hello"));
 
-            //await sendEndpoint.Send(messageToSend);
-            await sendEndpoint.Send<Message>(new
-            {
-                messageToSend.Text
-            },
-            sendcontext =>
-            {
-                sendcontext.Headers.Set("message-id", "12345"); 
-            });
+            ////await sendEndpoint.Send(messageToSend);
+            //await sendEndpoint.Send<Message>(new
+            //{
+            //    messageToSend.Text
+            //},
+            //sendcontext =>
+            //{
+            //    sendcontext.Headers.Set("message-id", "12345"); 
+            //});
 
             return Ok();
         }
