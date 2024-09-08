@@ -1,4 +1,7 @@
+using HelloApi.Consumers;
+using HelloApi.Cotracts;
 using MassTransit;
+using System.Reflection;
 namespace HelloApi
 {
     public class Program
@@ -17,7 +20,33 @@ namespace HelloApi
 
             builder.Services.AddMassTransit(x =>
             {
-                x.UsingRabbitMq();
+                //var entryAssemly = Assembly.GetEntryAssembly();
+                //x.AddConsumers(entryAssemly);
+                //x.SetKebabCaseEndpointNameFormatter();
+                //x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("hellos", true));
+                //x.AddConsumers(typeof(MessageConsumer));
+
+                //x.AddConsumer<MessageConsumer>();
+                //x.AddConsumer<MessageConsumer, MessageConsumerDefinition>();
+                //x.AddConsumer<MessageConsumer>()
+                //.Endpoint(e => e.Name = "salutation");
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    //cfg.Host("localhost", "/", h =>
+                    //{
+                    //    h.Username("guest");
+                    //    h.Password("guest");
+                    //});
+                    //cfg.ReceiveEndpoint("manually-configured", e =>
+                    //{
+                    //    e.UseMessageRetry(r => r.Interval(5, TimeSpan.FromSeconds(1)));
+                    //    e.ConfigureConsumer<MessageConsumer>(context);
+                    //    e.ConfigureConsumeTopology = false;
+                    //});
+                    //cfg.Message<Message>(x => x.SetEntityName("my-message"));
+                    //cfg.ConfigureEndpoints(context);
+                });
 
                 //x.UsingInMemory(); // for testing
             });
