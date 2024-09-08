@@ -10,6 +10,7 @@ namespace HelloApi
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddOptions<RabbitMqTransportOptions>().BindConfiguration("RabbitMq");
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -18,7 +19,11 @@ namespace HelloApi
             {
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host("rabbitmq://localhost");
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
                 });
 
                 //x.UsingInMemory(); // for testing
