@@ -1,5 +1,6 @@
 using HelloApi.Consumers;
 using HelloApi.Cotracts;
+using HelloApi.Filters;
 using MassTransit;
 using MassTransit.Transports.Fabric;
 using System.Reflection;
@@ -18,61 +19,20 @@ namespace HelloApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<Tenant>();
 
             builder.Services.AddMassTransit(x =>
             {
-                //var entryAssemly = Assembly.GetEntryAssembly();
-                //x.AddConsumers(entryAssemly);
-                //x.SetKebabCaseEndpointNameFormatter();
-                //x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("hellos", true));
-                //x.AddConsumers(typeof(MessageConsumer));
-
                 x.AddConsumer<MessageConsumer>();
-                //x.AddConsumer<MessageConsumer, MessageConsumerDefinition>();
-                //x.AddConsumer<MessageConsumer>()
-                //.Endpoint(e => e.Name = "salutation");
-
+                
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    //cfg.Host("localhost", "/", h =>
-                    //{
-                    //    h.Username("guest");
-                    //    h.Password("guest");
-                    //});
-                    //cfg.ReceiveEndpoint("manually-configured", e =>
-                    //{
-                    //    e.UseMessageRetry(r => r.Interval(5, TimeSpan.FromSeconds(1)));
-                    //    e.ConfigureConsumer<MessageConsumer>(context);
-                    //    e.ConfigureConsumeTopology = false;
-                    //});
-                    //cfg.Message<Message>(x => x.SetEntityName("my-message"));
+                    cfg.UseSendFilter(typeof(TenantSendFilter<>), context);
+                    cfg.UsePublishFilter(typeof(TenantPublishFilter<>), context);
+                    cfg.UseConsumeFilter(typeof(TenantConsumeFilter<>), context);
 
-
-                    cfg.ReceiveEndpoint("my-direct-queue", e =>
-                    {
-                        e.ConfigureConsumeTopology = false;
-                        e.Bind("my-direct-exchange", b =>
-                        {
-                            b.ExchangeType = "direct";
-                            b.RoutingKey = "my-direct-router-key";
-                        });
-                        //e.Bind<Message>();
-                        e.ConfigureConsumer<MessageConsumer>(context);
-                    });
-                    cfg.Publish<Message>(x =>
-                    {
-                        x.ExchangeType = "direct";
-                        x.Durable = true;
-                        x.AutoDelete = true;
-                        x.Exclude = true;
-                    });
                     cfg.ConfigureEndpoints(context);
-
-
-
                 });
-
-                //x.UsingInMemory(); // for testing
 
             });
 
