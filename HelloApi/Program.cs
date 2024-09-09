@@ -1,6 +1,8 @@
 using HelloApi.Consumers;
 using HelloApi.Cotracts;
 using HelloApi.Filters;
+using HelloApi.Orders.Consumers;
+using HelloApi.Orders.Contracts;
 using MassTransit;
 using MassTransit.Transports.Fabric;
 using System.Reflection;
@@ -24,6 +26,11 @@ namespace HelloApi
             builder.Services.AddMassTransit(x =>
             {
                 x.AddConsumer<MessageConsumer>();
+                x.AddConsumer<MyRequestConsumer>();
+                x.AddConsumer<VerifyOrderConsumer>();
+
+                x.AddRequestClient<MyRequest>();
+                x.AddRequestClient<VerifyOrder>();
                 
                 x.UsingRabbitMq((context, cfg) =>
                 {

@@ -12,15 +12,18 @@ namespace HelloApi.Controllers
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly ISendEndpointProvider _sendEndpointProvider;
         private readonly Tenant _tenant;
+        private readonly IRequestClient<MyRequest> _requestClient;
 
         public HelloController(
             IPublishEndpoint publishEndpoint, 
             ISendEndpointProvider sendEndpointProvider,
-            Tenant tenant)
+            Tenant tenant,
+            IRequestClient<MyRequest> requestClient)
         {
             _publishEndpoint = publishEndpoint;
             _sendEndpointProvider = sendEndpointProvider;
             _tenant = tenant;
+            _requestClient = requestClient;
             _tenant.MyValue = "tenant-1";
         }
 
@@ -53,6 +56,18 @@ namespace HelloApi.Controllers
             //});
 
             return Ok();
+        }
+
+        [HttpGet("/request")]
+        public async Task<IActionResult> GetRequest()
+        {
+            var response = await _requestClient.GetResponse<MyResponse>(new MyRequest
+            {
+                Id = Guid.NewGuid(),
+                RequestBody = "Hello, World!"
+            });
+
+            return Ok(response.Message);
         }
     }
 }
