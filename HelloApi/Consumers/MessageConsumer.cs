@@ -15,7 +15,7 @@ namespace HelloApi.Consumers
         }
         public Task Consume(ConsumeContext<Message> context)
         {
-            //throw new ArgumentException("This is a test exception");
+            throw new ArgumentNullException(nameof(context));
             var message = context.Message;
             logger.LogInformation($"MessageConsumer message: {message.Text}");
             Task.Delay(1000);

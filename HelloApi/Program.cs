@@ -29,7 +29,7 @@ namespace HelloApi
                 {
                     cfg.UseSendFilter(typeof(TenantSendFilter<>), context);
                     //cfg.UsePublishFilter(typeof(TenantPublishFilter<>), context);
-                    cfg.UsePublishFilter(typeof(TenantPublishFilter<>), context);
+                    //cfg.UsePublishFilter(typeof(TenantPublishFilter<>), context);
                     cfg.UseConsumeFilter(typeof(TenantConsumeFilter<>), context,
                         x=> x.Include(typeof(Message)));
                     //cfg.UsePublishFilter<TenantPublishMessageFilter>(context);
@@ -37,6 +37,26 @@ namespace HelloApi
                     cfg.ConfigurePublish(x =>
                     {
                         x.UseFilter<Email>(new TenantPublishMessageFilter());
+                    });
+
+                    //cfg.UseMessageRetry(r =>
+                    //{
+                    //    //r.Handle<ArgumentNullException>();
+                    //    r.Ignore(typeof(InvalidOperationException), typeof(InvalidCastException));
+                    //    r.Immediate(3);
+                    //    //r.Ignore<ArgumentException>(t => t.ParamName == "orderTotal");
+                    //});
+
+                    cfg.UseDelayedRedelivery(r => r.Intervals(TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(15), TimeSpan.FromMinutes(30)));
+
+                    cfg.ReceiveEndpoint("manually-configured", e =>
+                    {
+                        e.UseMessageRetry(r =>
+                        {
+                            r.Ignore<ArgumentNullException>();
+                            r.Immediate(3);
+                        });
+                        e.ConfigureConsumer<MessageConsumer>(context);
                     });
 
                     cfg.ConfigureEndpoints(context);

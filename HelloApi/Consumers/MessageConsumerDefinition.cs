@@ -15,7 +15,14 @@ namespace HelloApi.Consumers
             IRegistrationContext context)
         {
             consumerConfigurator.ConcurrentMessageLimit = 2;
-            consumerConfigurator.UseMessageRetry(x => x.Interval(5, TimeSpan.FromSeconds(3)));
+            //consumerConfigurator.UseMessageRetry(x => x.Interval(5, TimeSpan.FromSeconds(3)));
+            consumerConfigurator.UseCircuitBreaker(cb =>
+            {
+                cb.TrackingPeriod = TimeSpan.FromSeconds(1);
+                cb.TripThreshold = 15;
+                cb.ActiveThreshold = 10;
+                cb.ResetInterval = TimeSpan.FromMinutes(5);
+            });
         }
     }
 }
