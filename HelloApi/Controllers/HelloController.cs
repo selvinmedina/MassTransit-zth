@@ -29,7 +29,11 @@ namespace HelloApi.Controllers
         {
             var messageToSend = new Message() { Text = "Hello, World!" };
 
-            //await _publishEndpoint.Publish(messageToSend);
+            await _publishEndpoint.Publish(new Email
+            {
+                Destination = "",
+                Subject = "Hello from an email!"
+            });
             await _publishEndpoint.Publish(messageToSend, publishContext =>
             {
                 //publishContext.SetRoutingKey("my-direct-router-key");

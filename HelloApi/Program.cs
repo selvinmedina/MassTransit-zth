@@ -28,8 +28,16 @@ namespace HelloApi
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.UseSendFilter(typeof(TenantSendFilter<>), context);
+                    //cfg.UsePublishFilter(typeof(TenantPublishFilter<>), context);
                     cfg.UsePublishFilter(typeof(TenantPublishFilter<>), context);
-                    cfg.UseConsumeFilter(typeof(TenantConsumeFilter<>), context);
+                    cfg.UseConsumeFilter(typeof(TenantConsumeFilter<>), context,
+                        x=> x.Include(typeof(Message)));
+                    //cfg.UsePublishFilter<TenantPublishMessageFilter>(context);
+
+                    cfg.ConfigurePublish(x =>
+                    {
+                        x.UseFilter<Email>(new TenantPublishMessageFilter());
+                    });
 
                     cfg.ConfigureEndpoints(context);
                 });
