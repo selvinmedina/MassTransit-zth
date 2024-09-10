@@ -42,8 +42,15 @@ namespace Orders
             builder.Services.AddTransient<IOrderService, OrderService>();
             builder.Services.AddMassTransit(x =>
             {
+                //x.AddSagaStateMachine<OrderStateMachine, OrderState>()
+                //    .InMemoryRepository();
+
                 x.AddSagaStateMachine<OrderStateMachine, OrderState>()
-                    .InMemoryRepository();
+                    .EntityFrameworkRepository(r =>
+                    {
+                        r.ConcurrencyMode = ConcurrencyMode.Optimistic;
+                        r.ExistingDbContext<OrdersDbContext>();
+                    });
 
                 x.UsingRabbitMq((context, cfg) =>
                 {

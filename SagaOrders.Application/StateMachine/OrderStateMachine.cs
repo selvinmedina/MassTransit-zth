@@ -43,7 +43,7 @@ namespace SagaOrders.Application.StateMachine
                     {
                         Console.WriteLine("Order paid: {0}", context.Data.OrderId);
                         context.Saga.Amount = context.Message.Amount;
-                        context.Saga.PaidAt = DateTime.Now;
+                        context.Saga.PaidAt = DateTime.UtcNow;
                     })
                     .TransitionTo(Paid)
                     .Publish(context => new OrderPaid { OrderId = context.Saga.OrderId}),
@@ -51,7 +51,7 @@ namespace SagaOrders.Application.StateMachine
                     .Then(context =>
                     {
                         Console.WriteLine("Order canceled: {0}", context.Data.OrderId);
-                        context.Saga.CanceledAt = DateTime.Now;
+                        context.Saga.CanceledAt = DateTime.UtcNow;
                     })
                     .TransitionTo(Canceled)
                     .Publish(context => new OrderCancelled { OrderId = context.Saga.OrderId})
