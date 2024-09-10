@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SagaOrders", "Orders\SagaOr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SagaOrders.Application", "SagaOrders.Application\SagaOrders.Application.csproj", "{7A417572-A679-4734-900C-5D2F158F8302}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.Tests", "Orders.Tests\Orders.Tests.csproj", "{21D21FB7-5382-48CE-A2AF-537AB146D05C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{7A417572-A679-4734-900C-5D2F158F8302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A417572-A679-4734-900C-5D2F158F8302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A417572-A679-4734-900C-5D2F158F8302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21D21FB7-5382-48CE-A2AF-537AB146D05C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21D21FB7-5382-48CE-A2AF-537AB146D05C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21D21FB7-5382-48CE-A2AF-537AB146D05C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21D21FB7-5382-48CE-A2AF-537AB146D05C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
